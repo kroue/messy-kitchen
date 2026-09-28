@@ -80,14 +80,14 @@ In `src/data/drops.ts`:
   id: 'ube-week-2026',
   title: 'Ube week',
   description: 'Ube everything, for seven days only.',
-  start: '2026-11-03',   // inclusive, Philippine time
-  end: '2026-11-09',     // inclusive
+  start: '2026-11-03',   // optional, inclusive, Philippine time
+  end: '2026-11-09',     // optional, inclusive; shown to visitors as "until Nov 9"
   menuItemId: 'ube-cake', // optional: links the drop to that item (or its reservation)
   accent: 'ube',
 },
 ```
 
-A drop only shows between its start and end dates. When no drop is active, the strip disappears. Dates are checked at build time and again in the visitor's browser, so drops switch on and off on schedule without a redeploy.
+A drop shows between its start and end dates. Leave both out and it shows until you delete it. Only add an `end` the café has announced, because visitors see it. When no drop is active, the strip disappears. Dates are checked at build time and again in the visitor's browser, so drops switch on and off on schedule without a redeploy.
 
 ### Swap the stock photos for real ones
 

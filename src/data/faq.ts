@@ -18,7 +18,8 @@ export interface Faq {
 export const faqs: Faq[] = [
   {
     question: 'How far ahead should I reserve a cake?',
-    answer: `At least ${SITE.reservation.minLeadDays} days before pickup. For big orders or busy dates like holidays, earlier is better. We'll text you to confirm.`,
+    // TODO-confirm: the café's actual lead time for cakes.
+    answer: "Reserve ahead so we can have your cake ready. We'll text you to confirm your pickup date.",
     link: { href: '/reserve/', label: 'Reserve a cake' },
   },
   {

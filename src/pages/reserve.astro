@@ -18,7 +18,7 @@ const minDate = addDays(today, minLeadDays);
 const maxDate = addDays(today, maxLeadDays);
 
 const steps = [
-  { icon: 'cake' as const, title: 'Pick your cake', text: `Choose a cake, a branch and a pickup date at least ${minLeadDays} days away.` },
+  { icon: 'cake' as const, title: 'Pick your cake', text: 'Choose a cake, a branch and a pickup date.' },
   { icon: 'chat' as const, title: 'We text you', text: 'We confirm your reservation and send payment details by text.' },
   { icon: 'bag' as const, title: 'Pick it up', text: 'Drop by the branch on your date. Your cake will be ready.' },
 ];
@@ -26,7 +26,7 @@ const steps = [
 
 <BaseLayout
   title="Cake Reservation in CDO | Reserve a Tres Leches Cake"
-  description={`Reserve a Cookie Butter Tres Leches or Ube Cake online for pickup in Nazareth, Ayala Centrio or Kauswagan, Cagayan de Oro. Order at least ${minLeadDays} days ahead.`}
+  description={`Reserve a Cookie Butter Tres Leches or Ube Cake online for pickup in Nazareth, Ayala Centrio or Kauswagan, Cagayan de Oro. Reserve ahead.`}
   ogImage="/og/reserve.png"
   crumbs={[{ name: 'Reserve a Cake', path: '/reserve/' }]}
 >
@@ -60,7 +60,7 @@ const steps = [
       <div class="accent-cookie mt-10 rounded-[var(--radius-card)] bg-[var(--accent-wash)] p-6">
         <p class="eyebrow !text-[var(--accent-deep)]">Good to know</p>
         <ul class="mt-3 space-y-2 text-[1rem]">
-          <li>Order at least {minLeadDays} days before pickup.</li>
+          <li>Reserve ahead so your cake is ready when you are.</li>
           <li>Add a short dedication, up to {dedicationMaxLength} characters.</li>
           <li>
             Need it sooner, or a big batch? <a href={SITE.social.messenger} class="link" target="_blank" rel="noopener"
