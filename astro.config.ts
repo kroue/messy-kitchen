@@ -6,7 +6,23 @@ import { SITE } from './src/config/site';
 
 // Canonical URLs, the sitemap and Open Graph links all come from `site`.
 // Set SITE_URL in Vercel (or edit SITE.url) so they match the live domain.
-const site = process.env.SITE_URL ?? SITE.url;
+// Accepts "example.ph" or "https://example.ph"; blank or invalid values fall back
+// to Vercel's production domain, then to SITE.url.
+function resolveSite(): string {
+  const candidates = [process.env.SITE_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL, SITE.url];
+  for (const raw of candidates) {
+    const value = raw?.trim();
+    if (!value) continue;
+    try {
+      const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+      return url.origin;
+    } catch {
+      console.warn(`[site] Ignoring invalid site URL: "${value}"`);
+    }
+  }
+  return SITE.url;
+}
+const site = resolveSite();
 
 export default defineConfig({
   site,

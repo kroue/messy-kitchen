@@ -30,7 +30,7 @@ Copy `.env.example` to `.env` for local work, and add the same keys in **Vercel 
 | `RESEND_API_KEY`   | for email | API key from [resend.com](https://resend.com).                                                          |
 | `INQUIRY_TO_EMAIL` | for email | Where reservations and inquiries go. Comma-separate multiple addresses.                                 |
 | `RESEND_FROM`      | no       | Sender, e.g. `The Messy Kitchen <orders@yourdomain.ph>`. Domain must be verified in Resend. Defaults to Resend's test sender. |
-| `SITE_URL`         | no       | Live domain, e.g. `https://themessykitchen.ph`. Overrides `SITE.url` for canonicals, sitemap and OG tags. |
+| `SITE_URL`         | no       | Live domain, e.g. `themessykitchen.ph` or `https://themessykitchen.ph`. Used for canonicals, sitemap and OG tags. If blank, falls back to Vercel's production domain, then `SITE.url`. |
 
 **Demo mode for forms:** if `RESEND_API_KEY` or `INQUIRY_TO_EMAIL` is missing, the forms still validate and show the success message (plus a small "Demo mode" note), but no email is sent.
 
