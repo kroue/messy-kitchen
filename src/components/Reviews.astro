@@ -1,0 +1,21 @@
+---
+import reviews from '../data/reviews.json';
+---
+
+<ul class="grid gap-5 md:grid-cols-3">
+  {
+    reviews.map((r) => (
+      <li class="reveal">
+        <figure class="card flex h-full flex-col border border-ink/10 p-7">
+          <span aria-hidden="true" class="font-display text-5xl leading-none font-light text-cream-deep">
+            “
+          </span>
+          <blockquote class="mt-2 flex-1 text-[1.1875rem] leading-relaxed italic">
+            <p>{r.quote}</p>
+          </blockquote>
+          <figcaption class="eyebrow mt-6">{r.source}</figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>

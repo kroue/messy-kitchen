@@ -1,0 +1,72 @@
+---
+import { drops } from '../data/drops';
+import { menuById } from '../data/menu';
+import { manilaToday, shortDate } from '../lib/time';
+import Icon from './Icon.astro';
+
+// Drops that already ended at build time are left out entirely.
+// The script below re-checks dates in the visitor's browser (Asia/Manila),
+// so drops start and end on time between deploys too.
+const today = manilaToday();
+const upcoming = drops.filter((d) => d.end >= today);
+const isActive = (d: (typeof drops)[number]) => d.start <= today && today <= d.end;
+const anyActive = upcoming.some(isActive);
+---
+
+{
+  upcoming.length > 0 && (
+    <section aria-labelledby="drops-title" class="container-site mt-6" data-drops hidden={!anyActive}>
+      <h2 id="drops-title" class="sr-only">
+        Limited drops
+      </h2>
+      <ul class="flex flex-col gap-3 md:flex-row">
+        {upcoming.map((d) => {
+          const item = d.menuItemId ? menuById(d.menuItemId) : undefined;
+          const href = item?.reservable ? `/reserve/?cake=${item.id}` : item ? `/menu/#${item.id}` : '/menu/';
+          return (
+            <li
+              class:list={["fade-in-delay md:flex-1", `accent-${d.accent}`]}
+              data-drop-start={d.start}
+              data-drop-end={d.end}
+              hidden={!isActive(d)}
+            >
+              <a
+                href={href}
+                class="lift group flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--accent-wash)] p-4 pr-5 sm:p-5"
+              >
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-paper text-[var(--accent-deep)]">
+                  <Icon name="sparkle" class="h-6 w-6" />
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="eyebrow block !text-[var(--accent-deep)]">Limited drop · until {shortDate(d.end)}</span>
+                  <span class="mt-1 block font-display text-[1rem] tracking-[0.1em] uppercase">{d.title}</span>
+                  <span class="mt-0.5 block text-[0.9375rem] leading-snug text-muted">{d.description}</span>
+                </span>
+                <Icon name="arrow" class="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )
+}
+
+<script>
+  const strip = document.querySelector<HTMLElement>('[data-drops]');
+  if (strip) {
+    const today = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Manila',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+    let any = false;
+    strip.querySelectorAll<HTMLElement>('[data-drop-start]').forEach((li) => {
+      const on = li.dataset.dropStart! <= today && today <= li.dataset.dropEnd!;
+      li.hidden = !on;
+      any ||= on;
+    });
+    strip.hidden = !any;
+  }
+</script>

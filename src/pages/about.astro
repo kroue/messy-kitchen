@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import Reviews from '../components/Reviews.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE } from '../config/site';
+
+const years = new Date().getFullYear() - SITE.foundingYear;
+// TODO-confirm: the founding story (who started it, first location, how the name came about).
+---
+
+<BaseLayout
+  title="About Us | Baking in Cagayan de Oro Since 2018"
+  description={`The Messy Kitchen has been baking in Cagayan de Oro since ${SITE.foundingYear}. The story behind our tres leches, cookies and quiet café, and the three branches we call home.`}
+  ogImage="/og/about.png"
+  crumbs={[{ name: 'About', path: '/about/' }]}
+>
+  <section class="container-site pt-8 md:pt-12">
+    <SectionHeader as="h1" eyebrow={`Baking since ${SITE.foundingYear}`} title="About The Messy Kitchen">
+      <p>A little kitchen in Cagayan de Oro that grew into three branches, one tres leches at a time.</p>
+    </SectionHeader>
+  </section>
+
+  <section class="container-site mt-14 grid items-start gap-12 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <Photo photo="cafeCorner" loading="eager" aspect="4 / 5" sizes="(min-width: 1152px) 460px, (min-width: 768px) 40vw, 100vw" />
+    </div>
+    <div class="space-y-6 text-[1.1875rem] md:col-span-6 md:col-start-7 md:pt-8">
+      <p class="eyebrow">Our story</p>
+      <p>
+        We started baking in {SITE.foundingYear} with a simple idea: make the desserts we love to eat, and share them with
+        the people around us. The kitchen got messy. The cakes got better.
+      </p>
+      <p>
+        Tres leches became our signature, soaked and milky, made for sharing. Then came the cookies, the matcha, and a café
+        where you can sit with all of them.
+      </p>
+      <p>
+        {years}+ years later, we bake for birthdays, office pantries, balikbayan pasalubong and quiet afternoons across three
+        branches in CDO. The name stayed. The mess stays in the kitchen.
+      </p>
+      <div class="flex items-center gap-4 pt-2">
+        <Icon name="whisk" class="h-10 w-10" strokeWidth={1.1} />
+        <p class="font-display text-sm tracking-[0.2em] uppercase">Baked with love in Cagayan de Oro</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-24 bg-cream py-20 md:py-24" aria-labelledby="experience-title">
+    <div class="container-site">
+      <SectionHeader eyebrow="The café experience" title="Messy in name only" id="experience-title" />
+      <ul class="mt-12 grid gap-10 md:grid-cols-3">
+        {
+          [
+            { icon: 'cup' as const, title: 'Slow down', text: 'Soft light, clean lines and room to breathe. Stay for one coffee or three.' },
+            { icon: 'cookie' as const, title: 'Baked in-house', text: 'Our cakes and cookies come out of our own kitchen, not a delivery truck.' },
+            { icon: 'heart' as const, title: 'Made to share', text: 'Whole cakes, cookie boxes and pasalubong for the people you love.' },
+          ].map((v) => (
+            <li class="reveal">
+              <Icon name={v.icon} class="h-12 w-12" strokeWidth={1.1} />
+              <h3 class="display-3 mt-5">{v.title}</h3>
+              <p class="mt-3 text-muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-site mt-24" aria-labelledby="gallery-title">
+    <h2 id="gallery-title" class="sr-only">Photos</h2>
+    <div class="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+      <Photo photo="tresLeches" tone="cookie" aspect="3 / 4" class="reveal" sizes="(min-width: 768px) 25vw, 50vw" />
+      <Photo photo="coffee" aspect="3 / 4" class="reveal md:mt-12" sizes="(min-width: 768px) 25vw, 50vw" />
+      <Photo photo="matchaLatte" tone="matcha" aspect="3 / 4" class="reveal" sizes="(min-width: 768px) 25vw, 50vw" />
+      <Photo photo="cookies" aspect="3 / 4" class="reveal md:mt-12" sizes="(min-width: 768px) 25vw, 50vw" />
+    </div>
+  </section>
+
+  <section class="container-site mt-24" aria-labelledby="reviews-title">
+    <SectionHeader eyebrow="Kind words" title="What guests say" id="reviews-title" align="center" />
+    <div class="mt-12"><Reviews /></div>
+  </section>
+
+  <FinalCta />
+</BaseLayout>

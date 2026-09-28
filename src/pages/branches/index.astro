@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import BranchCard from '../../components/BranchCard.astro';
+import Icon from '../../components/Icon.astro';
+import FinalCta from '../../components/FinalCta.astro';
+import { SITE } from '../../config/site';
+import { branches } from '../../data/branches';
+import { bakery } from '../../lib/schema';
+
+const site = Astro.site!;
+---
+
+<BaseLayout
+  title="Branches in Cagayan de Oro: Nazareth, Centrio, Kauswagan"
+  description="Visit The Messy Kitchen in CDO: our café in Nazareth, a kiosk at Ayala Malls Centrio, and Kauswagan near S&R on the way to the airport. Open daily."
+  ogImage="/og/branches.png"
+  crumbs={[{ name: 'Branches', path: '/branches/' }]}
+  schema={branches.map((b) => bakery(site, b))}
+>
+  <section class="container-site pt-8 md:pt-12">
+    <SectionHeader as="h1" eyebrow="Cagayan de Oro" title="Our Branches">
+      <p>Three spots around CDO, all open daily {SITE.hours.short}. Pick the one closest to you, or the one with soft serve.</p>
+    </SectionHeader>
+
+    <ul class="mt-12 grid gap-5 md:grid-cols-3">
+      {
+        branches.map((b) => (
+          <li>
+            <BranchCard branch={b} headingLevel="h2" />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-16 grid gap-5 md:grid-cols-3">
+      {
+        [
+          { icon: 'cake' as const, title: 'Cake pickups', text: 'Reserve online and pick up at any of the three branches.' },
+          { icon: 'plane' as const, title: 'On the way to the airport', text: 'Kauswagan is right before S&R. Easy pasalubong stop.' },
+          { icon: 'softserve' as const, title: 'Soft serve', text: 'Cookie Butter Soft Serve is a Kauswagan-only treat.' },
+        ].map((f) => (
+          <div class="flex gap-4 rounded-[var(--radius-card)] bg-cream p-6">
+            <Icon name={f.icon} class="h-8 w-8 shrink-0" />
+            <div>
+              <h2 class="font-display text-[0.9375rem] tracking-[0.14em] uppercase">{f.title}</h2>
+              <p class="mt-1 text-[1rem] text-muted">{f.text}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <FinalCta />
+</BaseLayout>

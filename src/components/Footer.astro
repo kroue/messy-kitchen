@@ -1,0 +1,89 @@
+---
+import { NAV, SITE } from '../config/site';
+import { branches, telUrl } from '../data/branches';
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-ink/10 bg-cream">
+  <div class="container-site grid gap-12 py-16 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <Wordmark size="md" />
+      <p class="mt-5 max-w-xs text-muted">
+        Tres leches, cookies, matcha and coffee in Cagayan de Oro. Baking with love since {SITE.foundingYear}.
+      </p>
+      <div class="mt-6 flex gap-2">
+        <a
+          href={SITE.social.facebook}
+          class="grid h-11 w-11 place-items-center rounded-full border border-ink/20 hover:border-ink"
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon name="facebook" class="h-5 w-5" label="Facebook" />
+        </a>
+        <a
+          href={SITE.social.instagram}
+          class="grid h-11 w-11 place-items-center rounded-full border border-ink/20 hover:border-ink"
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon name="instagram" class="h-5 w-5" label="Instagram" />
+        </a>
+        <a
+          href={SITE.social.messenger}
+          class="grid h-11 w-11 place-items-center rounded-full border border-ink/20 hover:border-ink"
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon name="chat" class="h-5 w-5" label="Messenger" />
+        </a>
+      </div>
+    </div>
+
+    <div class="md:col-span-5">
+      <h2 class="eyebrow !text-ink">Branches</h2>
+      <ul class="mt-5 space-y-5">
+        {
+          branches.map((b) => (
+            <li>
+              <a href={`/branches/${b.slug}/`} class="font-display text-sm tracking-[0.16em] uppercase hover:underline">
+                {b.name}
+              </a>
+              <p class="text-[0.9375rem] text-muted">{b.street}</p>
+              <a href={telUrl(b)} class="link text-[0.9375rem]">
+                {b.phone}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-5 text-[0.9375rem] text-muted">Open daily, {SITE.hours.short}</p>
+    </div>
+
+    <div class="md:col-span-3">
+      <h2 class="eyebrow !text-ink">Explore</h2>
+      <ul class="mt-5 grid grid-cols-2 gap-x-4 md:grid-cols-1">
+        {
+          [...NAV, { href: '/faq/', label: 'FAQ' }].map((n) => (
+            <li>
+              <a href={n.href} class="inline-flex min-h-10 items-center text-[0.9375rem] hover:underline">
+                {n.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={`mailto:${SITE.email}`} class="link mt-4 inline-block text-[0.9375rem] break-all">{SITE.email}</a>
+    </div>
+  </div>
+  <div class="border-t border-ink/10">
+    <div
+      class="container-site flex flex-col gap-2 py-6 text-[0.875rem] text-muted sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} {SITE.name}. Cagayan de Oro City, Philippines.</p>
+      <a href="/privacy/" class="link">Privacy Policy</a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,73 @@
+---
+import type { Branch } from '../data/branches';
+
+interface Props {
+  branch: Branch;
+  class?: string;
+}
+const { branch, class: className } = Astro.props;
+---
+
+<!-- Server renders the static hours; the script below swaps in "Open now" / "Closed" (Asia/Manila). -->
+<span
+  class:list={['pill min-w-[9.5rem] bg-cream-deep/60 text-ink', className]}
+  data-open-status={JSON.stringify(branch.hours)}
+  role="status"
+>
+  <span class="h-1.5 w-1.5 rounded-full bg-muted" data-dot aria-hidden="true"></span>
+  <span data-text>Open daily</span>
+</span>
+
+<script>
+  type Hours = { days: number[]; opens: string; closes: string };
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const mins = (hhmm: string) => {
+    const [h, m] = hhmm.split(':').map(Number);
+    return h * 60 + m;
+  };
+  const label = (hhmm: string) => {
+    const [h, m] = hhmm.split(':').map(Number);
+    const hr = h % 12 || 12;
+    return `${hr}${m ? ':' + String(m).padStart(2, '0') : ''} ${h < 12 ? 'AM' : 'PM'}`;
+  };
+
+  function status(hours: Hours[]) {
+    const parts = Object.fromEntries(fmt.formatToParts(new Date()).map((p) => [p.type, p.value]));
+    const day = DAYS.indexOf(parts.weekday);
+    const now = Number(parts.hour) * 60 + Number(parts.minute);
+    const today = hours.find((h) => h.days.includes(day));
+    if (today && now >= mins(today.opens) && now < mins(today.closes)) {
+      return { open: true, text: `Open now · until ${label(today.closes)}` };
+    }
+    if (today && now < mins(today.opens)) return { open: false, text: `Closed · opens ${label(today.opens)}` };
+    for (let i = 1; i <= 7; i++) {
+      const next = hours.find((h) => h.days.includes((day + i) % 7));
+      if (next) {
+        const when = i === 1 ? 'tomorrow' : DAYS[(day + i) % 7];
+        return { open: false, text: `Closed · opens ${when} ${label(next.opens)}` };
+      }
+    }
+    return { open: false, text: 'Closed' };
+  }
+
+  function update() {
+    document.querySelectorAll<HTMLElement>('[data-open-status]').forEach((el) => {
+      const s = status(JSON.parse(el.dataset.openStatus!));
+      el.querySelector('[data-text]')!.textContent = s.text;
+      const dot = el.querySelector('[data-dot]')!;
+      dot.classList.toggle('bg-matcha-deep', s.open);
+      dot.classList.toggle('bg-muted', !s.open);
+      el.classList.toggle('bg-matcha-wash', s.open);
+      el.classList.toggle('bg-cream-deep/60', !s.open);
+    });
+  }
+  update();
+  setInterval(update, 60_000);
+</script>

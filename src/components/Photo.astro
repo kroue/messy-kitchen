@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import { photos, type PhotoKey } from '../data/images';
+import Icon from './Icon.astro';
+
+interface Props {
+  photo: PhotoKey;
+  /**
+   * CSS aspect-ratio of the frame, e.g. "4 / 5". Reserves space so nothing shifts.
+   * Omit it to size the frame with classes instead (e.g. "aspect-[4/3] md:aspect-[4/5]").
+   */
+  aspect?: string;
+  /** `sizes` attribute, e.g. "(min-width: 768px) 33vw, 100vw". */
+  sizes: string;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+  /** Tint behind the illustration placeholder. */
+  tone?: 'cream' | 'paper' | 'matcha' | 'cookie' | 'ube';
+}
+
+const { photo, aspect, sizes, loading = 'lazy', class: className, tone = 'cream' } = Astro.props;
+const p = photos[photo];
+const widths = [320, 480, 640, 800, 1080, 1280, 1600].filter((w) => w <= p.width);
+const toneClass = {
+  cream: 'bg-cream text-ink/30',
+  paper: 'bg-paper text-ink/30',
+  matcha: 'bg-matcha-wash text-matcha-deep/45',
+  cookie: 'bg-cookie-wash text-cookie-deep/45',
+  ube: 'bg-ube-wash text-ube-deep/45',
+}[tone];
+---
+
+<div class:list={['relative isolate overflow-hidden rounded-[var(--radius-photo)]', toneClass, className]} style={aspect ? `aspect-ratio: ${aspect}` : undefined}>
+  <Icon name={p.fallback} class="absolute inset-0 -z-10 m-auto h-2/5 w-2/5" strokeWidth={1} />
+  {
+    p.src && (
+      <Image
+        src={p.src}
+        alt={p.alt}
+        width={p.width}
+        height={p.height}
+        widths={widths}
+        sizes={sizes}
+        loading={loading}
+        decoding="async"
+        fetchpriority={loading === 'eager' ? 'high' : undefined}
+        class="h-full w-full object-cover"
+        onerror="this.remove()"
+      />
+    )
+  }
+</div>

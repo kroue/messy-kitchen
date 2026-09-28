@@ -1,0 +1,60 @@
+---
+import { branches } from '../data/branches';
+import { formatPrice, type MenuItem } from '../data/menu';
+import Icon from './Icon.astro';
+
+interface Props {
+  item: MenuItem;
+  headingLevel?: 'h3' | 'h4';
+}
+const { item, headingLevel: H = 'h3' } = Astro.props;
+const accent = item.accent ?? 'none';
+const carriedBy = branches.filter((b) => item.branches.includes(b.slug));
+const everywhere = carriedBy.length === branches.length;
+const tagLabel = {
+  bestseller: 'Bestseller',
+  limited: item.limitedNote ? `Limited · ${item.limitedNote}` : 'Limited',
+  exclusive: `${carriedBy[0]?.name ?? ''} only`,
+};
+---
+
+<article class:list={['card lift flex h-full flex-col border border-ink/10 p-6', `accent-${accent}`]} id={item.id}>
+  <div class="flex items-start gap-4">
+    <span class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[var(--accent-wash)] text-[var(--accent-deep)]">
+      <Icon name={item.icon} class="h-9 w-9" strokeWidth={1.25} />
+    </span>
+    <div class="min-w-0">
+      {
+        item.tags && (
+          <ul class="mb-2 flex flex-wrap gap-1.5" aria-label="Tags">
+            {item.tags.map((t) => (
+              <li class="pill border border-[var(--accent-deep)]/30 text-[var(--accent-deep)]">{tagLabel[t]}</li>
+            ))}
+          </ul>
+        )
+      }
+      <H class="font-display text-[1.0625rem] leading-snug font-normal tracking-[0.1em]">{item.name}</H>
+    </div>
+  </div>
+  <p class="mt-4 text-[1rem] text-muted">{item.description}</p>
+  <div class="mt-auto pt-5">
+    <p class="flex items-baseline justify-between gap-3 border-t border-ink/10 pt-4">
+      <span class:list={['font-display tracking-[0.08em]', item.price == null ? 'text-sm text-muted uppercase' : 'text-lg']}>
+        {formatPrice(item.price)}
+      </span>
+      {item.unit && item.price != null && <span class="text-sm text-muted">per {item.unit}</span>}
+    </p>
+    <p class="mt-2 text-[0.875rem] text-muted">
+      <span class="sr-only">Available at: </span>
+      <Icon name="pin" class="mr-1 inline h-3.5 w-3.5 -translate-y-px" />
+      {everywhere ? 'All branches' : carriedBy.map((b) => b.name).join(' · ')}
+    </p>
+    {
+      item.category === 'whole-cakes' && item.reservable && (
+        <a href={`/reserve/?cake=${item.id}`} class="btn btn-primary btn-sm mt-5 w-full">
+          Reserve this cake<span class="sr-only">: {item.name}</span>
+        </a>
+      )
+    }
+  </div>
+</article>

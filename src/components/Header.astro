@@ -1,0 +1,95 @@
+---
+import { NAV } from '../config/site';
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+
+<header class="sticky top-0 z-50 border-b border-ink/10 bg-paper/90 backdrop-blur-md">
+  <div class="container-site flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+    <a href="/" class="-ml-1 rounded-lg p-1">
+      <Wordmark />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-7">
+        {
+          NAV.filter((n) => n.href !== '/reserve/').map((n) => (
+            <li>
+              <a
+                href={n.href}
+                aria-current={isActive(n.href) ? 'page' : undefined}
+                class="relative py-2 font-display text-[0.75rem] tracking-[0.2em] uppercase after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
+              >
+                {n.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/reserve/" class="btn btn-primary btn-sm hidden sm:inline-flex">Reserve a Cake</a>
+      <button
+        type="button"
+        class="-mr-2 grid h-11 w-11 place-items-center rounded-full lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        data-nav-toggle
+      >
+        <span class="sr-only" data-nav-label>Open menu</span>
+        <Icon name="menu" class="h-6 w-6" data-icon-open />
+        <Icon name="close" class="hidden h-6 w-6" data-icon-close />
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Main" class="border-t border-ink/10 bg-paper lg:hidden" hidden>
+    <ul class="container-site flex flex-col py-3">
+      {
+        NAV.map((n) => (
+          <li>
+            <a
+              href={n.href}
+              aria-current={isActive(n.href) ? 'page' : undefined}
+              class="flex min-h-12 items-center justify-between border-b border-ink/5 font-display text-sm tracking-[0.2em] uppercase aria-[current=page]:font-normal"
+            >
+              {n.label}
+              <Icon name="arrow" class="h-4 w-4 text-muted" />
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a href="/faq/" class="flex min-h-12 items-center justify-between font-display text-sm tracking-[0.2em] uppercase">
+          FAQ
+          <Icon name="arrow" class="h-4 w-4 text-muted" />
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.getElementById('mobile-nav');
+  if (toggle && panel) {
+    const set = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('[data-nav-label]')!.textContent = open ? 'Close menu' : 'Open menu';
+      toggle.querySelector('[data-icon-open]')!.classList.toggle('hidden', open);
+      toggle.querySelector('[data-icon-close]')!.classList.toggle('hidden', !open);
+    };
+    toggle.addEventListener('click', () => set(Boolean(panel.hidden)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        set(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

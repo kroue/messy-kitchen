@@ -1,0 +1,32 @@
+---
+import { SITE } from '../config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Para sa imong higala',
+  text = 'A birthday, a thank-you, a Tuesday. Reserve a cake two days ahead and pick it up at the branch nearest you.',
+} = Astro.props;
+---
+
+<section class="container-site mt-24 md:mt-32" aria-labelledby="final-cta-title">
+  <div class="reveal relative overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-center text-paper sm:px-12 md:py-20">
+    <Icon name="whisk" class="mx-auto h-14 w-14 text-paper/70" strokeWidth={1} />
+    <h2 id="final-cta-title" class="display-2 mx-auto mt-6 max-w-xl">{title}</h2>
+    <p class="mx-auto mt-5 max-w-lg text-[1.125rem] text-paper/80">{text}</p>
+    <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="/reserve/" class="btn border-paper bg-paper text-ink hover:bg-cream">Reserve a Cake</a>
+      <a
+        href={SITE.social.messenger}
+        class="btn border-paper/60 text-paper hover:bg-paper hover:text-ink"
+        target="_blank"
+        rel="noopener"
+      >
+        <Icon name="chat" /> Message us
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../config/site';
+import { faqs } from '../data/faq';
+import { faqPage } from '../lib/schema';
+---
+
+<BaseLayout
+  title="FAQ: Cake Reservations & Delivery | The Messy Kitchen"
+  description="How far ahead to reserve a cake, dedications, delivery, payment, corporate orders, soft serve and parking at The Messy Kitchen in Cagayan de Oro."
+  crumbs={[{ name: 'FAQ', path: '/faq/' }]}
+  schema={[faqPage(faqs)]}
+>
+  <section class="container-site grid gap-12 pt-8 md:pt-12 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <SectionHeader as="h1" eyebrow="Good questions" title="FAQ">
+        <p>Can't find your answer? We reply fastest on Messenger.</p>
+      </SectionHeader>
+      <a href={SITE.social.messenger} class="btn btn-ghost mt-8" target="_blank" rel="noopener"><Icon name="chat" /> Message us</a>
+    </div>
+    <div class="lg:col-span-8">
+      <ul class="divide-y divide-ink/10 border-y border-ink/10">
+        {
+          faqs.map((f, i) => (
+            <li>
+              <details class="group" open={i === 0}>
+                <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 font-display text-[1rem] tracking-[0.1em] uppercase [&::-webkit-details-marker]:hidden">
+                  <h2 class="font-normal">{f.question}</h2>
+                  <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ink/20 transition-transform duration-300 group-open:rotate-45">
+                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="pb-6 text-[1.0625rem] text-muted">
+                  <p class="max-w-2xl">{f.answer}</p>
+                  {f.link && (
+                    <a href={f.link.href} class="arrow-link mt-3 text-ink">
+                      {f.link.label} <Icon name="arrow" />
+                    </a>
+                  )}
+                </div>
+              </details>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

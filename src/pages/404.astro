@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="Page Not Found | The Messy Kitchen" description="This page got a little too messy. Head back to the menu or find a branch." noindex>
+  <section class="container-site flex flex-col items-center py-20 text-center md:py-28">
+    <Icon name="whisk" class="h-24 w-24 -rotate-12" strokeWidth={1} />
+    <p class="eyebrow mt-8">Error 404</p>
+    <h1 class="display-1 mt-4 max-w-2xl">This page got a little too messy</h1>
+    <p class="lede mt-5 max-w-md">We couldn't find what you were looking for. Maybe it's still in the oven.</p>
+    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+      <a href="/" class="btn btn-primary">Back home</a>
+      <a href="/menu/" class="btn btn-ghost">See the menu</a>
+      <a href="/branches/" class="btn btn-ghost">Find a branch</a>
+    </div>
+  </section>
+</BaseLayout>

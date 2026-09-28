@@ -1,0 +1,155 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import OpenStatus from '../../components/OpenStatus.astro';
+import MenuItemCard from '../../components/MenuItemCard.astro';
+import Photo from '../../components/Photo.astro';
+import FinalCta from '../../components/FinalCta.astro';
+import { SITE } from '../../config/site';
+import { branches, directionsUrl, telUrl, type Branch } from '../../data/branches';
+import { menuById, type MenuItem } from '../../data/menu';
+import type { PhotoKey } from '../../data/images';
+import { bakery } from '../../lib/schema';
+
+export const getStaticPaths = (() => branches.map((b) => ({ params: { slug: b.slug }, props: { branch: b } }))) satisfies GetStaticPaths;
+
+interface Props {
+  branch: Branch;
+}
+const { branch: b } = Astro.props;
+const site = Astro.site!;
+const items = (ids: string[]) => ids.map(menuById).filter((m): m is MenuItem => Boolean(m));
+const exclusives = items(b.exclusives);
+const picks = items(b.picks);
+const others = branches.filter((o) => o.slug !== b.slug);
+// TODO: swap for a photo of each branch.
+const photo: Record<Branch['slug'], PhotoKey> = { nazareth: 'cafe', 'ayala-centrio': 'coffee', kauswagan: 'cookieBox' };
+
+const details = [
+  { icon: 'building' as const, label: 'Address', value: `${b.street}, ${b.locality}` },
+  { icon: 'clock' as const, label: 'Hours', value: b.hoursLabel },
+  { icon: 'phone' as const, label: 'Phone', value: b.phone, href: telUrl(b) },
+  { icon: 'car' as const, label: 'Parking', value: b.parking },
+];
+---
+
+<BaseLayout
+  title={b.seo.title}
+  description={b.seo.description}
+  ogImage={`/og/branch-${b.slug}.png`}
+  crumbs={[
+    { name: 'Branches', path: '/branches/' },
+    { name: b.name, path: `/branches/${b.slug}/` },
+  ]}
+  schema={[bakery(site, b)]}
+>
+  <section class:list={['container-site grid items-center gap-10 pt-8 md:grid-cols-12 md:pt-12', `accent-${b.accent}`]}>
+    <div class="md:col-span-6">
+      <p class="eyebrow !text-[var(--accent-deep)]">{b.kind} · Cagayan de Oro</p>
+      <h1 class="display-1 mt-4">{SITE.name} {b.name}</h1>
+      <div class="mt-5"><OpenStatus branch={b} /></div>
+      {b.intro.map((p) => <p class="lede mt-5 max-w-xl">{p}</p>)}
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href={directionsUrl(b)} class="btn btn-primary" target="_blank" rel="noopener"><Icon name="pin" /> Get directions</a>
+        <a href={telUrl(b)} class="btn btn-ghost"><Icon name="phone" /> {b.phone}</a>
+        <a href={`/reserve/?branch=${b.slug}`} class="btn btn-ghost">Reserve for pickup here</a>
+      </div>
+    </div>
+    <div class="md:col-span-6">
+      <Photo
+        photo={photo[b.slug]}
+        tone={b.accent}
+        loading="eager"
+        class="aspect-[4/3] md:aspect-[5/6]"
+        sizes="(min-width: 1152px) 552px, (min-width: 768px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <section class="container-site mt-20" aria-labelledby="details-title">
+    <h2 id="details-title" class="sr-only">Branch details</h2>
+    <dl class="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        details.map((d) => (
+          <div class="bg-paper p-6">
+            <dt class="eyebrow flex items-center gap-2">
+              <Icon name={d.icon} class="h-4 w-4" />
+              {d.label}
+            </dt>
+            <dd class="mt-3 text-[1.0625rem]">
+              {d.href ? (
+                <a href={d.href} class="link">
+                  {d.value}
+                </a>
+              ) : (
+                d.value
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  {
+    exclusives.length > 0 && (
+      <section class="container-site mt-20" aria-labelledby="exclusive-title">
+        <p class="eyebrow">Only at {b.name}</p>
+        <h2 id="exclusive-title" class="display-2 mt-3">
+          Branch exclusive
+        </h2>
+        <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {exclusives.map((item) => (
+            <li>
+              <MenuItemCard item={item} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="container-site mt-20" aria-labelledby="picks-title">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="eyebrow">What to order</p>
+        <h2 id="picks-title" class="display-2 mt-3">Our picks at {b.name}</h2>
+      </div>
+      <a href="/menu/" class="arrow-link shrink-0">Full menu <Icon name="arrow" /></a>
+    </div>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        picks.map((item) => (
+          <li>
+            <MenuItemCard item={item} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container-site mt-20" aria-labelledby="other-title">
+    <h2 id="other-title" class="eyebrow">Other branches</h2>
+    <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+      {
+        others.map((o) => (
+          <li>
+            <a
+              href={`/branches/${o.slug}/`}
+              class="lift group flex items-center justify-between gap-4 rounded-[var(--radius-card)] border border-ink/10 p-5"
+            >
+              <span>
+                <span class="block font-display tracking-[0.14em] uppercase">{o.name}</span>
+                <span class="block text-[0.9375rem] text-muted">{o.street}</span>
+              </span>
+              <Icon name="arrow" class="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <FinalCta />
+</BaseLayout>

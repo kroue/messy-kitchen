@@ -1,0 +1,24 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** Heading level. Pages own the single h1; sections default to h2. */
+  as?: 'h1' | 'h2';
+  align?: 'left' | 'center';
+  class?: string;
+  id?: string;
+}
+const { eyebrow, title, as: Tag = 'h2', align = 'left', class: className, id } = Astro.props;
+---
+
+<div class:list={[align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl', className]}>
+  {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+  <Tag id={id} class={Tag === 'h1' ? 'display-1' : 'display-2'}>{title}</Tag>
+  {
+    Astro.slots.has('default') && (
+      <div class="lede mt-5">
+        <slot />
+      </div>
+    )
+  }
+</div>

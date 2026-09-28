@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import FormShell from '../components/FormShell.astro';
+import Field from '../components/Field.astro';
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import { SITE } from '../config/site';
+import { branches } from '../data/branches';
+import { budgets, occasions, offers } from '../data/celebrations';
+import { SUCCESS } from '../lib/inquiry';
+import { addDays, manilaToday } from '../lib/time';
+
+const { minLeadDays } = SITE.reservation;
+const today = manilaToday();
+const minDate = addDays(today, minLeadDays);
+const maxDate = addDays(today, 365);
+---
+
+<BaseLayout
+  title="Corporate Gifts & Bulk Cake Orders in Cagayan de Oro"
+  description="Cookie boxes, tres leches cake bundles, office pantry orders and corporate gifts from The Messy Kitchen in Cagayan de Oro. Pickup or delivery request."
+  ogImage="/og/celebrations.png"
+  crumbs={[{ name: 'Celebrations & Corporate', path: '/celebrations/' }]}
+>
+  <section class="container-site grid items-center gap-10 pt-8 md:grid-cols-12 md:pt-12">
+    <div class="md:col-span-6">
+      <SectionHeader as="h1" eyebrow="Bulk orders · Gifts · Events" title="Celebrations & Corporate">
+        <p>
+          Birthdays, team wins, client thank-yous and the office merienda. Tell us the headcount and the date, and we'll bake
+          for the crowd.
+        </p>
+      </SectionHeader>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="#inquiry" class="btn btn-primary">Send an inquiry</a>
+        <a href={SITE.social.messenger} class="btn btn-ghost" target="_blank" rel="noopener"><Icon name="chat" /> Message us</a>
+      </div>
+    </div>
+    <div class="md:col-span-6">
+      <Photo
+        photo="cookies"
+        loading="eager"
+        tone="cookie"
+        class="aspect-[4/3]"
+        sizes="(min-width: 1152px) 552px, (min-width: 768px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <section class="container-site mt-20" aria-labelledby="offers-title">
+    <h2 id="offers-title" class="sr-only">What we can do</h2>
+    <ul class="grid gap-5 md:grid-cols-3">
+      {
+        offers.map((o) => (
+          <li class:list={['reveal card lift border border-ink/10 p-7', `accent-${o.accent}`]}>
+            <span class="grid h-16 w-16 place-items-center rounded-full bg-[var(--accent-wash)] text-[var(--accent-deep)]">
+              <Icon name={o.icon} class="h-9 w-9" strokeWidth={1.25} />
+            </span>
+            <h3 class="display-3 mt-6">{o.title}</h3>
+            <p class="mt-3 text-muted">{o.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-20 bg-cream py-16 md:py-20" aria-labelledby="how-title">
+    <div class="container-site">
+      <SectionHeader eyebrow="How it works" title="Simple as one, two, three" id="how-title" />
+      <ol class="mt-10 grid gap-8 md:grid-cols-3">
+        {
+          [
+            ['Tell us the details', 'Occasion, quantity, date and budget. Rough numbers are fine.'],
+            ['Get options and a quote', 'We reply with what we can bake for your budget and timeline.'],
+            ['Pickup or delivery', 'Collect at any branch, or ask us about delivery for your order.'],
+          ].map(([t, d], i) => (
+            <li class="border-t border-ink/20 pt-5">
+              <p class="font-display text-3xl font-light text-muted">0{i + 1}</p>
+              <h3 class="mt-3 font-display text-[0.9375rem] tracking-[0.14em] uppercase">{t}</h3>
+              <p class="mt-2 text-[1rem] text-muted">{d}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section id="inquiry" class="container-site mt-20 grid scroll-mt-24 gap-12 lg:grid-cols-12" aria-labelledby="inquiry-title">
+    <div class="lg:col-span-4">
+      <SectionHeader eyebrow="Inquiry" title="Tell us about it" id="inquiry-title">
+        <p>We'll reply by text or email with options. Para sa imong team, pamilya, or barkada.</p>
+      </SectionHeader>
+      <p class="mt-6 text-[1rem] text-muted">
+        In a rush? Call the branch nearest you or email <a href={`mailto:${SITE.email}`} class="link break-all text-ink">{SITE.email}</a>.
+      </p>
+    </div>
+
+    <div class="lg:col-span-8">
+      <FormShell type="corporate" label="Celebrations and corporate inquiry" submitLabel="Send inquiry" successMessage={SUCCESS.corporate}>
+        <fieldset class="grid gap-6">
+          <legend class="eyebrow mb-5 !text-ink">The order</legend>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field label="Occasion" name="occasion">
+              <select id="f-occasion" name="occasion" class="field" required data-msg="Please choose an option." aria-describedby="f-occasion-error">
+                <option value="">Choose one</option>
+                {occasions.map((o) => <option>{o}</option>)}
+              </select>
+            </Field>
+            <Field label="Quantity" name="quantity" hint="e.g. 50 cookie boxes, 4 cakes, 30 people">
+              <input id="f-quantity" name="quantity" type="text" required maxlength="120" class="field" data-msg="Roughly how many? A guess is fine." aria-describedby="f-quantity-hint f-quantity-error" />
+            </Field>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field label="Date needed" name="date" hint={`At least ${minLeadDays} days from today`}>
+              <input
+                id="f-date"
+                name="date"
+                type="date"
+                required
+                min={minDate}
+                max={maxDate}
+                data-min-lead={minLeadDays}
+                data-max-lead="365"
+                class="field"
+                data-msg={`Please choose a date at least ${minLeadDays} days from today.`}
+                aria-describedby="f-date-hint f-date-error"
+              />
+            </Field>
+            <Field label="Budget range" name="budget">
+              <select id="f-budget" name="budget" class="field" required data-msg="Please choose a budget range." aria-describedby="f-budget-error">
+                <option value="">Choose a range</option>
+                {budgets.map((b) => <option>{b}</option>)}
+              </select>
+            </Field>
+          </div>
+
+          <fieldset>
+            <legend class="field-label">Pickup or delivery</legend>
+            <div class="mt-1 grid gap-3 sm:grid-cols-2">
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-ink/20 px-4 py-3 has-[:checked]:border-ink">
+                <input type="radio" name="fulfillment" value="pickup" class="check !mt-0" checked required />
+                Pickup at a branch
+              </label>
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-ink/20 px-4 py-3 has-[:checked]:border-ink">
+                <input type="radio" name="fulfillment" value="delivery" class="check !mt-0" />
+                Request delivery
+              </label>
+            </div>
+            <p class="field-error" data-error-for="fulfillment" role="alert" hidden></p>
+          </fieldset>
+
+          <div data-show-when="pickup">
+            <Field label="Pickup branch" name="branch">
+              <select id="f-branch" name="branch" class="field" required data-msg="Please choose a pickup branch." aria-describedby="f-branch-error">
+                <option value="">Choose a branch</option>
+                {branches.map((b) => <option value={b.slug}>{b.name}</option>)}
+              </select>
+            </Field>
+          </div>
+          <div data-show-when="delivery">
+            <Field label="Delivery address" name="address" hint="Delivery depends on the order and location. We'll confirm.">
+              <textarea id="f-address" name="address" rows="2" maxlength="300" class="field" data-msg="Please tell us where to deliver." aria-describedby="f-address-hint f-address-error"></textarea>
+            </Field>
+          </div>
+        </fieldset>
+
+        <div class="h-px bg-ink/10" aria-hidden="true"></div>
+        <fieldset class="grid gap-6">
+          <legend class="eyebrow mb-5 !text-ink">Your details</legend>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field label="Name" name="name">
+              <input id="f-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" class="field" data-msg="Please enter your name." aria-describedby="f-name-error" />
+            </Field>
+            <Field label="Company" name="company" optional>
+              <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120" class="field" aria-describedby="f-company-error" />
+            </Field>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field label="Mobile" name="mobile" hint="Format: 09XXXXXXXXX">
+              <input
+                id="f-mobile"
+                name="mobile"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-national"
+                required
+                pattern="^(\+?63|0)9[0-9]{2}[\s\-]?[0-9]{3}[\s\-]?[0-9]{4}$"
+                maxlength="16"
+                class="field"
+                placeholder="09171234567"
+                data-msg="Please enter a PH mobile number like 09171234567."
+                aria-describedby="f-mobile-hint f-mobile-error"
+              />
+            </Field>
+            <Field label="Email" name="email" optional>
+              <input id="f-email" name="email" type="email" autocomplete="email" maxlength="120" class="field" data-msg="That email doesn’t look right." aria-describedby="f-email-error" />
+            </Field>
+          </div>
+          <Field label="Anything else?" name="message" optional hint="Flavors, packaging, branding, allergies.">
+            <textarea id="f-message" name="message" rows="4" maxlength="1500" class="field" aria-describedby="f-message-hint f-message-error"></textarea>
+          </Field>
+        </fieldset>
+      </FormShell>
+    </div>
+  </section>
+</BaseLayout>

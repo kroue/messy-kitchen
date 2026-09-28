@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Icon from '../components/Icon.astro';
+import OpenStatus from '../components/OpenStatus.astro';
+import { SITE } from '../config/site';
+import { branches, directionsUrl, telUrl } from '../data/branches';
+
+const channels = [
+  { icon: 'chat' as const, title: 'Messenger', text: 'Fastest for questions and orders.', href: SITE.social.messenger, cta: 'Send a message', external: true },
+  { icon: 'mail' as const, title: 'Email', text: SITE.email, href: `mailto:${SITE.email}`, cta: 'Write to us' },
+  { icon: 'instagram' as const, title: 'Instagram', text: SITE.social.instagramHandle, href: SITE.social.instagram, cta: 'Follow along', external: true },
+  { icon: 'facebook' as const, title: 'Facebook', text: 'News, drops and announcements.', href: SITE.social.facebook, cta: 'Visit our page', external: true },
+];
+---
+
+<BaseLayout
+  title="Contact The Messy Kitchen | Café in Cagayan de Oro"
+  description="Contact The Messy Kitchen in Cagayan de Oro: Messenger, email and phone numbers for our Nazareth, Ayala Centrio and Kauswagan branches."
+  crumbs={[{ name: 'Contact', path: '/contact/' }]}
+>
+  <section class="container-site pt-8 md:pt-12">
+    <SectionHeader as="h1" eyebrow="Say hello" title="Contact Us">
+      <p>Questions, orders, or just saying hi. Here's how to reach us.</p>
+    </SectionHeader>
+
+    <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        channels.map((c) => (
+          <li>
+            <a
+              href={c.href}
+              target={c.external ? '_blank' : undefined}
+              rel={c.external ? 'noopener' : undefined}
+              class="card lift group flex h-full flex-col border border-ink/10 p-6"
+            >
+              <Icon name={c.icon} class="h-9 w-9" strokeWidth={1.25} />
+              <h2 class="display-3 mt-5">{c.title}</h2>
+              <p class="mt-2 text-[1rem] break-words text-muted">{c.text}</p>
+              <span class="arrow-link mt-auto pt-5">
+                {c.cta} <Icon name="arrow" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container-site mt-20" aria-labelledby="call-title">
+    <SectionHeader eyebrow="Call a branch" title="Phone & hours" id="call-title" />
+    <ul class="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+      {
+        branches.map((b) => (
+          <li class="grid gap-3 py-6 md:grid-cols-12 md:items-center">
+            <div class="md:col-span-4">
+              <a href={`/branches/${b.slug}/`} class="font-display tracking-[0.14em] uppercase hover:underline">
+                {b.name}
+              </a>
+              <p class="text-[0.9375rem] text-muted">{b.street}</p>
+            </div>
+            <div class="md:col-span-4">
+              <OpenStatus branch={b} />
+              <p class="mt-1 text-[0.9375rem] text-muted">{b.hoursLabel}</p>
+            </div>
+            <div class="flex flex-wrap gap-2 md:col-span-4 md:justify-end">
+              <a href={telUrl(b)} class="btn btn-ghost btn-sm">
+                <Icon name="phone" /> {b.phone}
+              </a>
+              <a href={directionsUrl(b)} class="btn btn-ghost btn-sm" target="_blank" rel="noopener">
+                <Icon name="pin" /> Directions<span class="sr-only"> to {b.name}</span>
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container-site mt-16 grid gap-5 md:grid-cols-2">
+    <a href="/reserve/" class="accent-cookie lift flex items-center justify-between gap-4 rounded-[var(--radius-card)] bg-[var(--accent-wash)] p-7">
+      <span>
+        <span class="display-3 block">Reserve a cake</span>
+        <span class="mt-1 block text-[1rem] text-muted">Pickup at any branch, {SITE.reservation.minLeadDays} days ahead.</span>
+      </span>
+      <Icon name="arrow" class="h-6 w-6 shrink-0" />
+    </a>
+    <a href="/celebrations/" class="accent-ube lift flex items-center justify-between gap-4 rounded-[var(--radius-card)] bg-[var(--accent-wash)] p-7">
+      <span>
+        <span class="display-3 block">Bulk & corporate</span>
+        <span class="mt-1 block text-[1rem] text-muted">Cookie boxes, cake bundles, office pantry.</span>
+      </span>
+      <Icon name="arrow" class="h-6 w-6 shrink-0" />
+    </a>
+  </section>
+</BaseLayout>

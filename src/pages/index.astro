@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LogoMark from '../components/LogoMark.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import DropsStrip from '../components/DropsStrip.astro';
+import BranchCard from '../components/BranchCard.astro';
+import Reviews from '../components/Reviews.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE } from '../config/site';
+import { branches, branchBySlug, directionsUrl } from '../data/branches';
+import { formatPrice, menuById } from '../data/menu';
+import type { PhotoKey } from '../data/images';
+import { bakery } from '../lib/schema';
+
+const site = Astro.site!;
+const kauswagan = branchBySlug('kauswagan')!;
+const starCake = menuById('cookie-butter-tres-leches')!;
+
+const bestsellers: {
+  photo: PhotoKey;
+  accent: 'cookie' | 'matcha' | 'none';
+  eyebrow: string;
+  title: string;
+  text: string;
+  href: string;
+  note: string;
+}[] = [
+  {
+    photo: 'tresLeches',
+    accent: 'cookie',
+    eyebrow: 'Cakes & slices',
+    title: 'Tres Leches',
+    text: 'Soft, milky and made for sharing. Cookie Butter is the one everyone orders first.',
+    href: '/menu/#whole-cakes',
+    note: `${starCake.name} · ${formatPrice(starCake.price)}`,
+  },
+  {
+    photo: 'cookies',
+    accent: 'none',
+    eyebrow: 'Baked daily',
+    title: 'Cookies',
+    text: 'Double Dark Chocolate and Matcha White Chocolate. The cookies our reviews keep bringing up.',
+    href: '/menu/#cookies',
+    note: 'Great for pasalubong boxes',
+  },
+  {
+    photo: 'matcha',
+    accent: 'matcha',
+    eyebrow: 'Matcha & non-coffee',
+    title: 'Matcha',
+    text: 'Cereal Milk Matcha, Matcha Latte and friends. Creamy, earthy and very easy to love.',
+    href: '/menu/#matcha',
+    note: 'At every branch',
+  },
+];
+
+const igTiles: { photo: PhotoKey; caption: string }[] = [
+  { photo: 'coffee', caption: 'Slow coffee mornings' },
+  { photo: 'matchaLatte', caption: 'Matcha o’clock' },
+  { photo: 'cookieBox', caption: 'Fresh out of the oven' },
+  { photo: 'cafeCorner', caption: 'Your quiet corner' },
+];
+---
+
+<BaseLayout
+  title="The Messy Kitchen | Café & Cake Shop in Cagayan de Oro"
+  description="Tres leches, cookies, matcha and coffee in Cagayan de Oro. Branches in Nazareth, Ayala Centrio and Kauswagan, open daily 9 AM to 8 PM. Reserve a cake online."
+  schema={branches.map((b) => bakery(site, b))}
+>
+  <!-- Hero -->
+  <section class="container-site grid items-center gap-10 pt-8 md:grid-cols-12 md:gap-12 md:pt-14">
+    <div class="md:col-span-6">
+      <LogoMark class="h-16 w-16 md:h-24 md:w-24" />
+      <p class="eyebrow mt-7">Café & Bakery · Cagayan de Oro</p>
+      <h1 class="display-1 mt-4">Baked with love since {SITE.foundingYear}</h1>
+      <p class="lede mt-6 max-w-lg">
+        Tres leches, cookies, matcha and coffee in Cagayan de Oro. Three branches, open daily 9 AM to 8 PM.
+      </p>
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <a href="/reserve/" class="btn btn-primary">Reserve a Cake</a>
+        <a href="/branches/" class="btn btn-ghost"><Icon name="pin" /> Find a Branch</a>
+      </div>
+    </div>
+    <div class="md:col-span-6">
+      <Photo
+        photo="cafe"
+        loading="eager"
+        class="fade-in aspect-[4/3] rounded-t-[10rem] md:aspect-[4/5] md:rounded-t-[16rem]"
+        sizes="(min-width: 1152px) 552px, (min-width: 768px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <DropsStrip />
+
+  <!-- Bestsellers -->
+  <section class="container-site mt-24 md:mt-32" aria-labelledby="bestsellers-title">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHeader eyebrow="Bestsellers" title="The ones people come back for" id="bestsellers-title" />
+      <a href="/menu/" class="arrow-link shrink-0">See the full menu <Icon name="arrow" /></a>
+    </div>
+    <ul class="mt-12 grid gap-6 md:grid-cols-3">
+      {
+        bestsellers.map((b) => (
+          <li class:list={['reveal', `accent-${b.accent}`]}>
+            <a href={b.href} class="lift-img group block">
+              <Photo
+                photo={b.photo}
+                aspect="4 / 5"
+                tone={b.accent === 'none' ? 'cream' : b.accent}
+                sizes="(min-width: 1152px) 352px, (min-width: 768px) 33vw, 100vw"
+              />
+              <p class="eyebrow mt-6 !text-[var(--accent-deep)]">{b.eyebrow}</p>
+              <h3 class="display-3 mt-2 group-hover:underline">{b.title}</h3>
+              <p class="mt-3 text-muted">{b.text}</p>
+              <p class="mt-4 flex items-center gap-2 text-[0.9375rem]">
+                <span class="h-px w-6 bg-[var(--accent)]" aria-hidden="true" />
+                {b.note}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- The café -->
+  <section class="mt-24 bg-cream py-20 md:mt-32 md:py-28" aria-labelledby="cafe-title">
+    <div class="container-site grid items-center gap-12 md:grid-cols-12">
+      <div class="reveal md:col-span-5">
+        <Photo photo="cafeCorner" tone="paper" aspect="4 / 5" sizes="(min-width: 1152px) 460px, (min-width: 768px) 40vw, 100vw" />
+      </div>
+      <div class="md:col-span-6 md:col-start-7">
+        <SectionHeader eyebrow="The café" title="Messy in name only" id="cafe-title">
+          <p>
+            Clean lines, soft light and a quiet table for as long as you need it. Bring a book, bring a friend, or just
+            bring yourself. We'll bring the cake.
+          </p>
+        </SectionHeader>
+        <ul class="mt-8 space-y-3">
+          {
+            ['Coffee, matcha and non-coffee drinks', 'Slices and cookies baked every day', 'Open daily, 9 AM to 8 PM'].map(
+              (t) => (
+                <li class="flex items-center gap-3">
+                  <Icon name="check" class="h-5 w-5 shrink-0" />
+                  {t}
+                </li>
+              ),
+            )
+          }
+        </ul>
+        <a href="/about/" class="arrow-link mt-8">Our story <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pasalubong -->
+  <section class="accent-cookie container-site mt-24 md:mt-32" aria-labelledby="pasalubong-title">
+    <div class="grid items-center gap-10 overflow-hidden rounded-[2rem] border border-ink/10 md:grid-cols-2 md:gap-0">
+      <div class="order-2 p-6 pb-8 sm:p-10 md:order-1 md:p-14">
+        <p class="eyebrow !text-[var(--accent-deep)]">Pasalubong stop</p>
+        <h2 id="pasalubong-title" class="display-2 mt-4">Heading to the airport?</h2>
+        <p class="lede mt-5">
+          Our Kauswagan branch is right before S&R on Kauswagan Highway, on your way out of the city. Grab a box of cookies
+          or a whole tres leches for the people waiting back home.
+        </p>
+        <ul class="mt-6 space-y-2 text-[1rem]">
+          <li class="flex items-center gap-3">
+            <Icon name="clock" class="h-5 w-5 shrink-0 text-[var(--accent-deep)]" />
+            Open daily, {SITE.hours.short}
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="softserve" class="h-5 w-5 shrink-0 text-[var(--accent-deep)]" />
+            Cookie Butter Soft Serve, only here
+          </li>
+        </ul>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/reserve/?branch=kauswagan" class="btn btn-primary">Reserve for pickup</a>
+          <a href={directionsUrl(kauswagan)} class="btn btn-ghost" target="_blank" rel="noopener">
+            <Icon name="pin" /> Directions
+          </a>
+        </div>
+      </div>
+      <div class="order-1 h-full md:order-2">
+        <Photo
+          photo="cookieBox"
+          tone="cookie"
+          class="aspect-[4/3] h-full !rounded-none md:aspect-auto md:min-h-[32rem]"
+          sizes="(min-width: 1152px) 576px, (min-width: 768px) 50vw, 100vw"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="container-site mt-24 md:mt-32" aria-labelledby="reviews-title">
+    <SectionHeader eyebrow="Kind words" title="From our Google reviews" id="reviews-title" align="center" />
+    <div class="mt-12"><Reviews /></div>
+  </section>
+
+  <!-- Branches -->
+  <section class="container-site mt-24 md:mt-32" aria-labelledby="branches-title">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHeader eyebrow="Visit us" title="Three branches, one kitchen" id="branches-title" />
+      <a href="/branches/" class="arrow-link shrink-0">All branch details <Icon name="arrow" /></a>
+    </div>
+    <ul class="mt-12 grid gap-5 md:grid-cols-3">
+      {
+        branches.map((b) => (
+          <li class="reveal">
+            <BranchCard branch={b} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Instagram -->
+  <section class="container-site mt-24 md:mt-32" aria-labelledby="ig-title">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHeader eyebrow={SITE.social.instagramHandle} title="Follow the mess" id="ig-title" />
+      <a href={SITE.social.instagram} class="arrow-link shrink-0" target="_blank" rel="noopener"
+        >Open Instagram <Icon name="arrow" /></a
+      >
+    </div>
+    <ul class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+      {
+        igTiles.map((t) => (
+          <li class="reveal">
+            <a href={SITE.social.instagram} target="_blank" rel="noopener" class="lift-img group relative block">
+              <Photo photo={t.photo} aspect="1 / 1" sizes="(min-width: 768px) 25vw, 50vw" />
+              <span class="absolute inset-x-2 bottom-2 flex items-center justify-between gap-2 rounded-full bg-paper/90 py-1.5 pr-2 pl-3 font-display text-[0.625rem] tracking-[0.14em] uppercase backdrop-blur sm:inset-x-3 sm:bottom-3 sm:text-[0.6875rem]">
+                <span class="truncate">{t.caption}</span>
+                <Icon name="instagram" class="h-4 w-4 shrink-0" />
+              </span>
+              <span class="sr-only">(opens Instagram)</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <FinalCta />
+</BaseLayout>

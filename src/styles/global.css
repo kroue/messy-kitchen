@@ -1,0 +1,441 @@
+@import 'tailwindcss';
+
+/* ──────────────────────────────────────────────────────────────
+   DESIGN TOKENS: The Messy Kitchen
+   Quiet café, not a busy bakery flyer. Warm white, cream, ink,
+   and one product accent at a time.
+   ────────────────────────────────────────────────────────────── */
+@theme {
+  /* Base */
+  --color-paper: #fbf8f3; /* warm white, page background */
+  --color-cream: #f1e9dd; /* section background */
+  --color-cream-deep: #e6dac8; /* borders, dividers on cream */
+  --color-ink: #1a1a1a; /* text + line art (16.4:1 on paper) */
+  --color-muted: #5c554d; /* secondary text (6.9:1 paper, 6.1:1 cream) */
+
+  /* Accents: decorative use only (lines, dots, washes).
+     Raw matcha/cookie fail AA as text on cream, so use the -deep tones for text. */
+  --color-matcha: #7a8f5a;
+  --color-matcha-deep: #56683a; /* 5.1:1 on cream */
+  --color-matcha-wash: #e7ead9;
+  --color-cookie: #b07a48;
+  --color-cookie-deep: #85562b; /* 5.2:1 on cream */
+  --color-cookie-wash: #f0e0cf;
+  --color-ube: #7b5c8e; /* 4.6:1 on cream */
+  --color-ube-deep: #654876; /* 6.4:1 on cream */
+  --color-ube-wash: #eae2ee;
+
+  /* Type */
+  --font-display: var(--font-jost), 'Jost', ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-newsreader), 'Newsreader', ui-serif, Georgia, serif;
+  --font-sans: var(--font-display);
+  --font-serif: var(--font-body);
+
+  --tracking-wide-1: 0.08em;
+  --tracking-wide-2: 0.16em;
+  --tracking-wide-3: 0.28em;
+
+  /* Shape */
+  --radius-card: 1.5rem;
+  --radius-photo: 1.75rem;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-lift: 0 18px 40px -24px rgb(26 26 26 / 0.35);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-2);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-cream-deep);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* ── Components ───────────────────────────────────────────── */
+@layer components {
+  .container-site {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 40rem) {
+    .container-site {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  /* Small wide-set label, like the café wall sign */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide-3);
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .display-1 {
+    font-size: clamp(1.9rem, 1.2rem + 3.6vw, 3.6rem);
+    letter-spacing: 0.14em;
+  }
+  .display-2 {
+    font-size: clamp(1.45rem, 1.1rem + 1.8vw, 2.4rem);
+    letter-spacing: 0.14em;
+  }
+  .display-3 {
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+    letter-spacing: 0.12em;
+  }
+
+  .lede {
+    font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3rem);
+    color: var(--color-muted);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide-2);
+    text-transform: uppercase;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 0.3s var(--ease-soft),
+      color 0.3s var(--ease-soft),
+      transform 0.3s var(--ease-soft);
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-primary:hover {
+    background: #333;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .btn-ghost:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-sm {
+    min-height: 2.5rem;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.75rem;
+  }
+  .btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* Underlined text link with a quiet hover */
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    letter-spacing: var(--tracking-wide-2);
+    text-transform: uppercase;
+    text-decoration: none;
+    min-height: 2.75rem;
+  }
+  .arrow-link svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    transition: transform 0.3s var(--ease-soft);
+  }
+  .arrow-link:hover svg {
+    transform: translateX(4px);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide-1);
+    text-transform: uppercase;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    background: var(--color-paper);
+  }
+
+  /* Accent helpers: one accent per card or section */
+  .accent-matcha {
+    --accent: var(--color-matcha);
+    --accent-deep: var(--color-matcha-deep);
+    --accent-wash: var(--color-matcha-wash);
+  }
+  .accent-cookie {
+    --accent: var(--color-cookie);
+    --accent-deep: var(--color-cookie-deep);
+    --accent-wash: var(--color-cookie-wash);
+  }
+  .accent-ube {
+    --accent: var(--color-ube);
+    --accent-deep: var(--color-ube-deep);
+    --accent-wash: var(--color-ube-wash);
+  }
+  .accent-none {
+    --accent: var(--color-ink);
+    --accent-deep: var(--color-ink);
+    --accent-wash: var(--color-cream);
+  }
+
+  /* Forms */
+  .field-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: var(--tracking-wide-2);
+    text-transform: uppercase;
+    margin-bottom: 0.45rem;
+  }
+  .field-hint {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    margin-top: 0.35rem;
+  }
+  .field {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid #b9ad9c;
+    border-radius: 0.875rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .field:hover {
+    border-color: var(--color-ink);
+  }
+  .field:focus-visible {
+    outline: none;
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px rgb(26 26 26 / 0.15);
+  }
+  .field[aria-invalid='true'] {
+    border-color: #a3352b;
+  }
+  select.field {
+    appearance: none;
+    padding-right: 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.1rem;
+  }
+  textarea.field {
+    min-height: 7rem;
+    resize: vertical;
+  }
+  .field-error {
+    color: #a3352b; /* 5.9:1 on paper */
+    font-size: 0.9375rem;
+    margin-top: 0.35rem;
+  }
+  .check {
+    appearance: none;
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-top: 0.2rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 0.35rem;
+    background: var(--color-paper);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+  }
+  .check[type='radio'] {
+    border-radius: 999px;
+  }
+  .check::before {
+    content: '';
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: scale(0);
+    transition: transform 0.15s var(--ease-soft);
+    background: var(--color-ink);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+  .check[type='radio']::before {
+    clip-path: circle(50%);
+    width: 0.6rem;
+    height: 0.6rem;
+  }
+  .check:checked::before {
+    transform: scale(1);
+  }
+}
+
+/* ── Motion ───────────────────────────────────────────────── */
+@layer utilities {
+  .lift {
+    transition:
+      transform 0.5s var(--ease-soft),
+      box-shadow 0.5s var(--ease-soft);
+  }
+  .lift:hover,
+  .lift:focus-within {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+  .lift-img img {
+    transition: transform 0.8s var(--ease-soft);
+  }
+  .lift-img:hover img {
+    transform: scale(1.03);
+  }
+
+  .fade-in {
+    animation: fade-in 0.9s var(--ease-soft) both;
+  }
+  .fade-in-delay {
+    animation: fade-in 0.9s 0.15s var(--ease-soft) both;
+  }
+
+  /* Gentle reveal as sections scroll in (CSS only, no JS). */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0.001;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    animation: none !important;
+  }
+  .lift:hover,
+  .lift:focus-within,
+  .lift-img:hover img {
+    transform: none;
+  }
+}

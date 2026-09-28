@@ -1,0 +1,35 @@
+---
+import { SITE } from '../config/site';
+import Icon from './Icon.astro';
+
+const path = Astro.url.pathname;
+const items = [
+  { href: '/reserve/', label: 'Reserve a Cake', icon: 'cake' as const },
+  { href: '/branches/', label: 'Branches', icon: 'pin' as const },
+  { href: SITE.social.messenger, label: 'Messenger', icon: 'chat' as const, external: true },
+];
+---
+
+<nav
+  aria-label="Quick actions"
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-ink/10 bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+>
+  <ul class="grid grid-cols-3">
+    {
+      items.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            aria-current={!item.external && path.startsWith(item.href) ? 'page' : undefined}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener' : undefined}
+            class="flex h-[4.5rem] flex-col items-center justify-center gap-1 font-display text-[0.625rem] tracking-[0.16em] uppercase aria-[current=page]:bg-cream"
+          >
+            <Icon name={item.icon} class="h-6 w-6" />
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

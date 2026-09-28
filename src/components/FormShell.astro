@@ -1,0 +1,70 @@
+---
+import { SITE } from '../config/site';
+import Icon from './Icon.astro';
+
+/**
+ * Wraps an inquiry form: success panel, status line, honeypot, consent and submit.
+ * The form fields go in the default slot.
+ */
+interface Props {
+  type: 'reservation' | 'corporate';
+  submitLabel: string;
+  successMessage: string;
+  label: string;
+}
+const { type, submitLabel, successMessage, label } = Astro.props;
+---
+
+<div data-form-wrap class="card border border-ink/10 p-5 sm:p-8">
+  <form action="/api/inquiry/" method="post" novalidate data-inquiry aria-label={label} class="grid gap-6">
+    <input type="hidden" name="type" value={type} />
+    <input type="hidden" name="started" value="" />
+    <!-- Honeypot: humans never see this field. -->
+    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+      <label for={`hp-${type}`}>Leave this empty</label>
+      <input id={`hp-${type}`} type="text" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <slot />
+
+    <div>
+      <label class="flex cursor-pointer items-start gap-3 text-[1rem]">
+        <input
+          type="checkbox"
+          name="consent"
+          value="yes"
+          required
+          class="check"
+          data-msg="Please agree so we can use your details to reply."
+          aria-describedby={`consent-${type}-error`}
+        />
+        <span>
+          I agree to The Messy Kitchen collecting and using these details to respond to this request, as described in the{' '}
+          <a href="/privacy/" class="link" target="_blank">Privacy Policy</a> (Data Privacy Act of 2012).
+        </span>
+      </label>
+      <p id={`consent-${type}-error`} class="field-error" data-error-for="consent" role="alert" hidden></p>
+    </div>
+
+    <p data-status role="alert" class="rounded-xl bg-cookie-wash px-4 py-3 text-[1rem]" hidden></p>
+
+    <button type="submit" class="btn btn-primary w-full sm:w-auto sm:justify-self-start">{submitLabel}</button>
+  </form>
+
+  <div data-success tabindex="-1" class="py-10 text-center outline-none" hidden>
+    <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-matcha-wash text-matcha-deep">
+      <Icon name="check" class="h-8 w-8" />
+    </span>
+    <p class="display-3 mx-auto mt-6 max-w-md" data-success-message>{successMessage}</p>
+    <p class="mt-4 text-muted">
+      Questions in the meantime? <a href={SITE.social.messenger} class="link text-ink" target="_blank" rel="noopener"
+        >Message us on Messenger</a
+      >.
+    </p>
+    <p class="mt-4 text-[0.875rem] text-muted" data-demo-note hidden>Demo mode: this preview doesn't send emails yet.</p>
+  </div>
+</div>
+
+<script>
+  import '../scripts/forms';
+</script>

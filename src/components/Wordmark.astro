@@ -1,0 +1,23 @@
+---
+import LogoMark from './LogoMark.astro';
+import { SITE } from '../config/site';
+
+interface Props {
+  class?: string;
+  size?: 'sm' | 'md';
+}
+const { class: className, size = 'sm' } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2.5', className]}>
+  <LogoMark class={size === 'sm' ? 'h-9 w-9 shrink-0' : 'h-12 w-12 shrink-0'} />
+  <span class="flex flex-col leading-none">
+    <span
+      class:list={[
+        'font-display font-normal tracking-[0.26em] uppercase',
+        size === 'sm' ? 'text-[0.8125rem]' : 'text-[0.9375rem]',
+      ]}>{SITE.name}</span
+    >
+    <span class="mt-1 font-display text-[0.5625rem] tracking-[0.3em] text-muted uppercase">Café & Bakery</span>
+  </span>
+</span>

@@ -1,0 +1,23 @@
+---
+/** Label + hint + error slot around a single form control. */
+interface Props {
+  label: string;
+  name: string;
+  /** id of the control; defaults to `f-${name}`. */
+  for?: string;
+  hint?: string;
+  optional?: boolean;
+  class?: string;
+}
+const { label, name, for: htmlFor = `f-${name}`, hint, optional, class: className } = Astro.props;
+---
+
+<div class={className}>
+  <label for={htmlFor} class="field-label">
+    {label}
+    {optional && <span class="ml-1 tracking-normal text-muted normal-case">(optional)</span>}
+  </label>
+  <slot />
+  {hint && <p id={`${htmlFor}-hint`} class="field-hint">{hint}</p>}
+  <p id={`${htmlFor}-error`} class="field-error" data-error-for={name} role="alert" hidden></p>
+</div>

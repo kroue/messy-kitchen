@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site';
+
+// TODO-confirm: have the owner review this policy and name a Data Protection Officer.
+const updated = 'September 28, 2026';
+---
+
+<BaseLayout
+  title="Privacy Policy | The Messy Kitchen"
+  description="How The Messy Kitchen collects, uses and protects your personal data under the Philippine Data Privacy Act of 2012 (RA 10173)."
+  crumbs={[{ name: 'Privacy Policy', path: '/privacy/' }]}
+>
+  <article class="container-site pt-8 md:pt-12">
+    <header class="max-w-2xl">
+      <p class="eyebrow">Last updated {updated}</p>
+      <h1 class="display-1 mt-4">Privacy Policy</h1>
+      <p class="lede mt-5">
+        We respect your privacy and handle your personal data in line with the Data Privacy Act of 2012 (Republic Act No.
+        10173), its Implementing Rules and Regulations, and issuances of the National Privacy Commission (NPC).
+      </p>
+    </header>
+
+    <div class="prose-policy mt-12 max-w-2xl">
+      <h2>Who we are</h2>
+      <p>
+        {SITE.name} ("we", "us") is a café and bakery in {SITE.city}, Philippines. We are the personal information
+        controller for data collected through this website. Contact: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+
+      <h2>What we collect</h2>
+      <p>Only what you type into our forms:</p>
+      <ul>
+        <li><strong>Cake reservations:</strong> name, mobile number, optional email, the cake, quantity, pickup branch and date, dedication and notes.</li>
+        <li><strong>Celebrations & corporate inquiries:</strong> name, optional company, mobile number, optional email, occasion, quantity, date, budget range, pickup branch or delivery address, and your message.</li>
+      </ul>
+      <p>
+        This website does not use advertising or analytics cookies and does not track you across other sites. Our hosting
+        provider keeps standard server logs (such as IP address and browser type) for security and to keep the site running.
+      </p>
+
+      <h2>Why we use it</h2>
+      <ul>
+        <li>To confirm your reservation or inquiry, arrange payment, and prepare your order.</li>
+        <li>To contact you by text, call or email about that order.</li>
+        <li>To keep basic records of orders as required for our business and by law.</li>
+      </ul>
+      <p>We do not sell your data or use it for marketing without asking you first.</p>
+
+      <h2>Legal basis</h2>
+      <p>
+        We process your data based on your consent, which you give by ticking the box on our forms, and because it is
+        necessary to fulfill the order you ask for (Sections 12(a) and 12(b), Data Privacy Act).
+      </p>
+
+      <h2>Who we share it with</h2>
+      <p>Only with service providers that help us run this website, bound to protect your data:</p>
+      <ul>
+        <li><strong>Vercel</strong>, which hosts this website.</li>
+        <li><strong>Resend</strong>, which delivers form submissions to our inbox by email.</li>
+      </ul>
+      <p>These providers may process data outside the Philippines. We share only what is needed to deliver your request.</p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        We keep reservation and inquiry details for up to one (1) year after your order is completed, unless a longer period
+        is required by law (for example, tax records). After that, we delete or anonymize it.
+      </p>
+
+      <h2>How we protect it</h2>
+      <p>
+        Form data travels over an encrypted connection (HTTPS). Access to order emails is limited to staff who need it to
+        prepare your order.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>Under the Data Privacy Act, you have the right to:</p>
+      <ul>
+        <li>be informed about how your data is processed;</li>
+        <li>access your data and get a copy of it;</li>
+        <li>object to processing, and withdraw your consent;</li>
+        <li>correct inaccurate or incomplete data;</li>
+        <li>have your data blocked, removed or destroyed;</li>
+        <li>data portability;</li>
+        <li>claim damages for harm caused by inaccurate, incomplete, unlawfully obtained or unauthorized use of your data; and</li>
+        <li>file a complaint with the National Privacy Commission (<a href="https://privacy.gov.ph" rel="noopener">privacy.gov.ph</a>).</li>
+      </ul>
+      <p>
+        To exercise any of these, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the subject "Data Privacy
+        Request". We will reply within fifteen (15) working days.
+      </p>
+
+      <h2>Data Protection Officer</h2>
+      <p>
+        For privacy questions or concerns, contact our Data Protection Officer at{' '}
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy from time to time. The date at the top shows the latest version.</p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-policy :global(h2) {
+    font-size: 1rem;
+    letter-spacing: 0.16em;
+    margin-top: 2.75rem;
+    margin-bottom: 0.75rem;
+    font-weight: 400;
+  }
+  .prose-policy :global(p),
+  .prose-policy :global(li) {
+    font-size: 1.0625rem;
+    color: var(--color-muted);
+  }
+  .prose-policy :global(p + p),
+  .prose-policy :global(ul + p),
+  .prose-policy :global(p + ul) {
+    margin-top: 0.75rem;
+  }
+  .prose-policy :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .prose-policy :global(li + li) {
+    margin-top: 0.35rem;
+  }
+  .prose-policy :global(strong) {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .prose-policy :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>
